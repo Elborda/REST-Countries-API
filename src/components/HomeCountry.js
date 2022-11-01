@@ -10,6 +10,7 @@ import {
   Select,
   SimpleGrid,
   Text,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import { SearchIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { Link, Outlet } from 'react-router-dom';
@@ -19,7 +20,8 @@ const HomeCountry = () => {
   const [countryData, setCountryData] = useState(null);
   const [filteredData, setFilteredData] = useState(null);
   const [dataComplete, setDataComple] = useState(null);
-  const [input, setInput] = useState('');
+
+  const [smallerThan425] = useMediaQuery('(max-width: 425px)');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,13 +58,14 @@ const HomeCountry = () => {
     setDataComple(filterRegion);
   };
 
-  console.log(dataComplete);
-
   return (
     <>
       <Flex justifyContent="center" alignItems="center" paddingTop="40px">
         <Flex w="95%" flexDir="column">
-          <Flex justifyContent="space-between">
+          <Flex
+            justifyContent="space-between"
+            flexDir={smallerThan425 ? 'column' : 'row'}
+          >
             <Box>
               <InputGroup>
                 <InputLeftElement
@@ -79,10 +82,7 @@ const HomeCountry = () => {
             </Box>
             <Box>
               <InputGroup>
-                <InputRightElement
-                  pointerEvents="none"
-                  children={<ChevronDownIcon />}
-                />
+                <InputRightElement pointerEvents="none" />
                 <Select
                   w="10em"
                   placeholder="Filter by Region"
@@ -97,16 +97,19 @@ const HomeCountry = () => {
               </InputGroup>
             </Box>
           </Flex>
-          <SimpleGrid
-            columns={[1, 2, 3, 4, 5]}
-            spacing="25px"
-            paddingTop="25px"
-          >
+          <SimpleGrid columns={[1, 2, 3]} spacing="30px" paddingTop="25px">
             {dataComplete?.map((country, index) => {
               return (
                 <Link key={index} to={`country/${country?.name?.common}`}>
-                  <Box boxShadow="base" paddingBottom="15px">
-                    <Image src={country?.flags?.png} />
+                  <Box boxShadow="base" h="290px" rounded="10px">
+                    <Image
+                      rounded="10px 10px 0 0"
+                      src={country?.flags?.png}
+                      h="158px"
+                      objectFit="cover"
+                      objectPosition="center"
+                      w="100%"
+                    />
                     <Flex flexDir="column" padding="10px">
                       <Heading as="h5" fontSize="20px">
                         {country?.name?.common}

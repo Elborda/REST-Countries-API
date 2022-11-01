@@ -1,10 +1,21 @@
-import { Heading, Flex, Button, Image, Text, Box } from '@chakra-ui/react';
+import {
+  Heading,
+  Flex,
+  Button,
+  Image,
+  Text,
+  Box,
+  Tag,
+  useMediaQuery,
+} from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { Link, useParams } from 'react-router-dom';
 
 const SingleCountry = () => {
   const [singleCountry, setSingleCountry] = useState();
+  const [smallerThan425] = useMediaQuery('(max-width: 425px)');
+  const [smallerThan768] = useMediaQuery('(max-width: 768px)');
 
   const { name } = useParams();
 
@@ -31,36 +42,72 @@ const SingleCountry = () => {
             singleCountry.map((country, index) => {
               const countryLenguage = country.languages;
               const getKeyCurrency = country.currencies;
-
               const countryCurrency = Object.values(getKeyCurrency);
 
               return (
                 <Box key={index} paddingTop="55px">
-                  <Flex flexDir="row" justifyContent="space-around" gap="10px">
-                    <Image src={country.flags.png} />
-                    <Flex>
-                      <Flex flexDir="column">
-                        <Heading as="h5" fontSize="20px">
+                  <Flex
+                    flexDir={smallerThan768 ? 'column' : 'row'}
+                    justifyContent="space-around"
+                    gap="10px"
+                    alignItems={smallerThan425 ? 'center' : 'center'}
+                  >
+                    <Image
+                      src={country.flags.png}
+                      w={smallerThan425 ? 'auto' : '22em'}
+                      h={smallerThan425 ? 'auto' : '20em'}
+                      objectPosition="center"
+                    />
+                    <Flex
+                      alignItems={smallerThan425 ? 'flex-start' : 'center'}
+                      justifyContent="center"
+                      paddingLeft="15px"
+                      flexDir={smallerThan425 ? 'column' : 'row'}
+                      gap={smallerThan425 ? '10px' : ''}
+                    >
+                      <Flex
+                        flexDir="column"
+                        alignItems="flex-start"
+                        justifyContent="center"
+                        gap="10px"
+                      >
+                        <Heading as="h5" fontSize="25px" paddingBottom="20px">
                           {country.name.common}
                         </Heading>
                         <Text>
-                          Native name: {country.name.nativeName.official}
+                          <Tag>Native name :</Tag>{' '}
+                          {country.name.nativeName.official}
                         </Text>
-                        <Text>Population : {country.population}</Text>
-                        <Text>Region: {country.region}</Text>
-                        <Text>Sub Region: {country.subregion}</Text>
-                        <Text>Capital: {country.capital}</Text>
-                      </Flex>
-                      <Flex flexDir="column">
-                        <Text>Top Level Domain: {country.tld}</Text>
                         <Text>
-                          Currencies:{' '}
+                          <Tag>Population :</Tag> {country.population}
+                        </Text>
+                        <Text>
+                          <Tag>Region:</Tag> {country.region}
+                        </Text>
+                        <Text>
+                          <Tag>Sub Region:</Tag> {country.subregion}
+                        </Text>
+                        <Text>
+                          <Tag>Capital:</Tag> {country.capital}
+                        </Text>
+                      </Flex>
+                      <Flex
+                        flexDir="column"
+                        gap="10px"
+                        alignItems="flex-start"
+                        justifyContent="center"
+                      >
+                        <Text>
+                          <Tag>Top Level Domain:</Tag> {country.tld}
+                        </Text>
+                        <Text>
+                          <Tag>Currencies:</Tag>{' '}
                           {countryCurrency.map(currency => {
                             return currency.name;
                           })}
                         </Text>
                         <Text>
-                          Lenguages:{' '}
+                          <Tag>Lenguages:</Tag>{' '}
                           {Object.values(countryLenguage).map(leng => {
                             return `${leng} `;
                           })}
@@ -69,12 +116,16 @@ const SingleCountry = () => {
                       </Flex>
                     </Flex>
                   </Flex>
-                  <Flex paddingTop="30px" flexDir="column">
+                  <Flex paddingTop="40px" flexDir="column">
                     {country.borders !== undefined && (
                       <Text>
                         Border Countries:{' '}
-                        {country?.borders?.map(border => {
-                          return <Button margin="0 5px 0 5px">{border}</Button>;
+                        {country?.borders?.map((border, index) => {
+                          return (
+                            <Button margin="5px 5px 5px 5px" key={index}>
+                              {border}
+                            </Button>
+                          );
                         })}
                       </Text>
                     )}
